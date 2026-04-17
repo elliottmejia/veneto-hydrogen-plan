@@ -2,7 +2,7 @@
 
 ## Context
 
-Build a premium Shopify Hydrogen storefront matching the design and UX quality of visualcomfort.com. Fresh Hydrogen project, Tailwind CSS, Shopify backend not yet set up. Several thousand products, 3-month timeline. No 3D viewer needed. Core deliverable is a polished product detail page (PDP) with image gallery, variant selectors, specs, and downloadable resources.
+Build a premium Shopify Hydrogen storefront matching the quality of visualcomfort.com. Fresh Hydrogen project, Tailwind CSS, Shopify backend not yet set up. Several thousand products, 3-month timeline. No 3D viewer needed. Core deliverable is a polished product detail page (PDP) with image gallery, variant selectors, specs, and downloadable resources.
 
 **Content/page builder:** [Builder.io](https://www.builder.io/) is the visual CMS for marketing pages, homepage sections, landing pages, and editable content blocks within PDPs/collections. Developers register React components; merchandisers compose pages visually. Shopify remains the source of truth for product, variant, inventory, and cart data — Builder.io does not own commerce data.
 
