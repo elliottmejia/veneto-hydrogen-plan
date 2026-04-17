@@ -14,6 +14,7 @@ const sortedPosts = posts.sort((a, b) =>
 );
 
 const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 
 interface TocItem {
   text: string;
@@ -51,7 +52,7 @@ const buildToc = (content: string): TocItem[] => {
 };
 
 // Get the current page's content to extract headings
-const currentPost = sortedPosts.find(p => `/${p.id}` === currentPath.replace(/\/$/, ''));
+const currentPost = sortedPosts.find(p => `${base}/${p.id}` === currentPath.replace(/\/$/, ''));
 const toc = currentPost ? buildToc(currentPost.body) : [];
 ---
 
@@ -335,7 +336,7 @@ const toc = currentPost ? buildToc(currentPost.body) : [];
 
   <nav>
     {sortedPosts.map((post) => (
-      <a href={`/${post.id}`} class={currentPath.replace(/\/$/, '') === `/${post.id}` ? 'active' : ''}>
+      <a href={`${base}/${post.id}`} class={currentPath.replace(/\/$/, '') === `${base}/${post.id}` ? 'active' : ''}>
         {post.data.title}
       </a>
     ))}
