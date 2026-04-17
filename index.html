@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veneto — Shopify Hydrogen Storefront Build Plan</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'Menlo', 'Monaco', monospace;
+      --color-canvas: #FAF9F7;
+      --color-bg: #FFFFFF;
+      --color-text-primary: #1A1A1A;
+      --color-text-muted: #6B6B6B;
+      --color-accent: #8B7355;
+      --color-border: #E8E6E2;
+      --color-code-bg: #F5F4F2;
+      --sidebar-w: 230px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-primary);
+      background: var(--color-canvas);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: calc(var(--sidebar-w) + 900px + 5rem);
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      height: 56px;
+    }
+
+    .header-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--color-text-primary);
+      white-space: nowrap;
+    }
+
+    .header-meta {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Layout ── */
+    .page-body {
+      max-width: calc(var(--sidebar-w) + 900px + 5rem);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: var(--sidebar-w) 1fr;
+      align-items: start;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: sticky;
+      top: calc(56px + 44px);
+      height: calc(100vh - 56px - 44px);
+      overflow-y: auto;
+      padding: 2rem 1rem 2rem 1.5rem;
+      border-right: 1px solid var(--color-border);
+      scrollbar-width: thin;
+    }
+
+    .sidebar-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 0.75rem;
+      padding-left: 0.6rem;
+    }
+
+    .sidebar nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+    }
+
+    .sidebar nav a {
+      display: block;
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      text-decoration: none;
+      padding: 0.3rem 0.6rem;
+      border-left: 2px solid transparent;
+      border-radius: 0 2px 2px 0;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      line-height: 1.4;
+    }
+
+    .sidebar nav a.h3-link {
+      font-size: 0.77rem;
+      padding-left: 1.2rem;
+      color: #9A9A9A;
+    }
+
+    .sidebar nav a:hover {
+      color: var(--color-text-primary);
+      background: rgba(139, 115, 85, 0.06);
+    }
+
+    .sidebar nav a.active {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      background: rgba(139, 115, 85, 0.07);
+      font-weight: 500;
+    }
+
+    /* ── Main content ── */
+    main {
+      min-width: 0;
+      padding: 3rem 3rem 4rem 2.5rem;
+    }
+
+    /* ── Markdown rendered content ── */
+    #content h1 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      margin-top: 0;
+    }
+
+    #content h2 {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 400;
+      margin-top: 4rem;
+      margin-bottom: 1.25rem;
+      padding-top: 1rem;
+      letter-spacing: -0.01em;
+      border-top: 1px solid var(--color-border);
+    }
+
+    #content h2:first-child { border-top: none; margin-top: 0; }
+
+    #content h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-top: 2.5rem;
+      margin-bottom: 0.85rem;
+    }
+
+    #content h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 1.75rem;
+      margin-bottom: 0.6rem;
+    }
+
+    #content p { margin-bottom: 1.1rem; }
+
+    #content ul, #content ol {
+      margin-left: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    #content li { margin-bottom: 0.5rem; }
+
+    #content hr {
+      border: none;
+      border-top: 1px solid var(--color-border);
+      margin: 3rem 0;
+    }
+
+    #content strong { font-weight: 600; }
+
+    #content a {
+      color: var(--color-accent);
+      text-decoration: underline;
+    }
+
+    #content a:hover { color: var(--color-text-primary); }
+
+    /* Tables */
+    #content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      border: 1px solid var(--color-border);
+    }
+
+    #content thead { background: var(--color-code-bg); border-bottom: 2px solid var(--color-border); }
+
+    #content th {
+      padding: 0.85rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    #content td {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.9rem;
+    }
+
+    #content tbody tr:last-child td { border-bottom: none; }
+    #content tbody tr:hover { background: rgba(139, 115, 85, 0.02); }
+
+    /* Code */
+    #content pre {
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      margin: 1.25rem 0;
+      overflow-x: auto;
+    }
+
+    #content pre code.hljs {
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem !important;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    #content code:not(pre code) {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+      background: var(--color-code-bg);
+      padding: 0.2em 0.45em;
+      border-radius: 3px;
+      color: var(--color-accent);
+    }
+
+    /* Mermaid diagrams */
+    #content .mermaid-wrapper {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 2rem;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    #content .mermaid-wrapper pre.mermaid {
+      border: none;
+      margin: 0;
+      padding: 0;
+      background: none;
+      display: flex;
+      justify-content: center;
+    }
+
+    #content .mermaid-wrapper svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--color-code-bg);
+      padding: 2.5rem 2rem;
+      margin-top: 4rem;
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.875rem;
+    }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      max-width: calc(var(--sidebar-w) + 900px + 5rem);
+      margin: 0 auto;
+    }
+
+    .tab-btn {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.7rem 1.1rem;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    .tab-btn:hover { color: var(--color-text-primary); }
+
+    .tab-btn.active {
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page-body { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      main { padding: 2rem 1.5rem; }
+      .header-container { padding: 0 1.5rem; }
+      #content h2 { font-size: 1.75rem; }
+      #content h3 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <span class="header-title">Veneto Luce</span>
+      <span class="header-meta">Shopify Hydrogen Build Plan</span>
+    </div>
+  </header>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="technical">Technical Plan</button>
+    <button class="tab-btn" data-tab="business">Business Overview</button>
+  </div>
+
+  <div class="page-body">
+    <aside class="sidebar">
+      <p class="sidebar-label">Contents</p>
+      <nav id="sidebar-nav"></nav>
+    </aside>
+
+    <main>
+      <div id="content"></div>
+    </main>
+  </div>
+
+  <footer>Veneto — Shopify Hydrogen Build Plan</footer>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
