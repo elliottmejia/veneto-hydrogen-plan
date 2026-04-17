@@ -1,0 +1,116 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('docs');
+const sortedPosts = posts.sort((a, b) =>
+  a.id === 'technical' ? -1 : 1
+);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Veneto Luce — Build Plan</title>
+  <style>
+    :root {
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --color-accent: #8b7355;
+      --color-border: #e8e6e2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: #faf9f7;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    p {
+      opacity: 0.7;
+      font-size: 1.1rem;
+    }
+
+    main {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .posts {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    a {
+      display: block;
+      padding: 2rem;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+
+    a:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 2px 8px rgba(139, 115, 85, 0.1);
+    }
+
+    a h2 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: var(--color-accent);
+    }
+
+    a p {
+      font-size: 0.95rem;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Veneto Luce</h1>
+    <p>Shopify Hydrogen Build Plan</p>
+  </header>
+
+  <main>
+    <div class="posts">
+      {sortedPosts.map((post) => (
+        <a href={`/${post.id}`}>
+          <h2>{post.data.title}</h2>
+          <p>Read the full plan →</p>
+        </a>
+      ))}
+    </div>
+  </main>
+</body>
+</html>

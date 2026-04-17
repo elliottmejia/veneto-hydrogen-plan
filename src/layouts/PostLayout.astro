@@ -1,0 +1,449 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  frontmatter: {
+    title: string;
+  };
+}
+
+const { frontmatter } = Astro.props;
+const posts = await getCollection('docs');
+const sortedPosts = posts.sort((a, b) =>
+  a.id === 'technical' ? -1 : 1
+);
+
+const currentPath = Astro.url.pathname;
+
+interface TocItem {
+  text: string;
+  id: string;
+  level: 2 | 3;
+  children?: TocItem[];
+}
+
+const buildToc = (content: string): TocItem[] => {
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+  const items: TocItem[] = [];
+  let match;
+
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = (match[1].length as 2 | 3);
+    const text = match[2].trim();
+    const id = text
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '');
+
+    const item: TocItem = { text, id, level };
+
+    if (level === 2) {
+      items.push(item);
+    } else if (level === 3 && items.length > 0) {
+      const parent = items[items.length - 1];
+      if (!parent.children) parent.children = [];
+      parent.children.push(item);
+    }
+  }
+
+  return items;
+};
+
+// Get the current page's content to extract headings
+const currentPost = sortedPosts.find(p => `/${p.id}` === currentPath.replace(/\/$/, ''));
+const toc = currentPost ? buildToc(currentPost.body) : [];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{frontmatter.title} — Veneto Luce</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/github.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+  <style is:global>
+    :root {
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+      --color-accent: #8b7355;
+      --color-border: #e8e6e2;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: #faf9f7;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0;
+    }
+
+    nav a {
+      display: block;
+      padding: 1rem;
+      text-decoration: none;
+      color: #1a1a1a;
+      opacity: 0.6;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    nav a:hover {
+      opacity: 0.9;
+    }
+
+    nav a.active {
+      opacity: 1;
+      color: var(--color-accent);
+      border-bottom-color: var(--color-accent);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: calc(1.5rem + 56px);
+      height: fit-content;
+      max-height: calc(100vh - 3rem - 56px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+    }
+
+    .sidebar-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 1rem;
+    }
+
+    .toc {
+      list-style: none;
+    }
+
+    .toc-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .toc-item > a {
+      display: block;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.9rem;
+      color: #666;
+      text-decoration: none;
+      border-left: 2px solid transparent;
+      border-radius: 0 2px 2px 0;
+      transition: all 0.15s;
+    }
+
+    .toc-item > a:hover {
+      color: #1a1a1a;
+      background: rgba(139, 115, 85, 0.06);
+    }
+
+    .toc-item > a.active {
+      color: var(--color-accent);
+      border-left-color: var(--color-accent);
+      background: rgba(139, 115, 85, 0.08);
+      font-weight: 500;
+    }
+
+    .toc-item.h3 > a {
+      padding-left: 1.5rem;
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    .toc-item.h3 > a:hover {
+      color: #666;
+    }
+
+    .toc-item.h3 > a.active {
+      color: var(--color-accent);
+    }
+
+    main {
+      min-width: 0;
+      padding: 2rem 0;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    code {
+      font-family: 'Menlo', monospace;
+      background: rgba(0, 0, 0, 0.05);
+      padding: 0.2em 0.4em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+
+    pre {
+      background: #f5f5f5;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    th, td {
+      border: 1px solid var(--color-border);
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    th {
+      background: #faf9f7;
+      font-weight: 600;
+    }
+
+    .mermaid {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+      margin: 2rem 0;
+    }
+
+    .mobile-menu-button {
+      display: none;
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    .sidebar.mobile-open {
+      display: block !important;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-menu-button {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        max-width: 250px;
+        height: 100vh;
+        background: #fff;
+        border-right: 1px solid var(--color-border);
+        z-index: 1000;
+        transition: left 0.3s ease;
+        padding: 1rem;
+        overflow-y: auto;
+        max-height: none;
+      }
+
+      .sidebar.mobile-open {
+        left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h1>Veneto Luce</h1>
+      <button class="mobile-menu-button" id="menu-toggle">☰</button>
+    </div>
+  </header>
+
+  <nav>
+    {sortedPosts.map((post) => (
+      <a href={`/${post.id}`} class={currentPath === `/${post.id}/` ? 'active' : ''}>
+        {post.data.title}
+      </a>
+    ))}
+  </nav>
+
+  <div class="container">
+    <aside class="sidebar">
+      <p class="sidebar-label">Contents</p>
+      <ul class="toc">
+        {toc.map((item) => (
+          <li class="toc-item" key={item.id}>
+            <a href={`#${item.id}`}>{item.text}</a>
+            {item.children && item.children.length > 0 && (
+              <ul class="toc">
+                {item.children.map((child) => (
+                  <li class="toc-item h3" key={child.id}>
+                    <a href={`#${child.id}`}>{child.text}</a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </aside>
+
+    <main>
+      <slot />
+    </main>
+  </div>
+
+  <script>
+    import hljs from 'highlight.js';
+    import mermaid from 'mermaid';
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    if (menuToggle && sidebar) {
+      menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('mobile-open');
+      });
+
+      sidebar.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          sidebar.classList.remove('mobile-open');
+        }
+      });
+    }
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'neutral',
+      securityLevel: 'loose',
+    });
+
+    document.querySelectorAll('pre code').forEach((el) => {
+      hljs.highlightElement(el);
+    });
+
+    mermaid.run();
+
+    // Scroll offset and active link highlighting
+    const SCROLL_OFFSET = 56 + 1.5 * 16; // header height + top padding in px
+
+    const headings = document.querySelectorAll('main h2, main h3');
+    const tocLinks = document.querySelectorAll('.toc-item > a');
+
+    // Set IDs on headings if not present
+    headings.forEach((h, i) => {
+      if (!h.id) {
+        const id = h.textContent
+          ?.toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-')
+          .replace(/^-|-$/g, '') || `h-${i}`;
+        h.id = id;
+      }
+    });
+
+    // Smooth scroll with offset on anchor click
+    tocLinks.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = link.getAttribute('href')?.slice(1);
+        const target = document.getElementById(id || '');
+        if (target) {
+          const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Active link highlighting with IntersectionObserver
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((link) => {
+              link.classList.remove('active');
+              if (link.getAttribute('href') === `#${entry.target.id}`) {
+                link.classList.add('active');
+              }
+            });
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px', threshold: 0 }
+    );
+
+    headings.forEach((h) => observer.observe(h));
+  </script>
+</body>
+</html>
