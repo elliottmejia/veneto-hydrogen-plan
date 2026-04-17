@@ -69,3 +69,7 @@ npm run preview  # Preview production build
 2. Import it in `main.js`: `import mdNew from './NEW_DOC.md'`
 3. Add an entry to the `docs` array: `{ id: 'new-id', label: 'Tab Label', md: mdNew }`
 4. Add a `<button class="tab-btn" data-tab="new-id">Tab Label</button>` in `index.html`
+
+## Testing
+
+When making changes that affect UI/features, I'll check in with you to either test it yourself in the browser or let me test it. I won't assume which you prefer — ask each time.
