@@ -1,5 +1,5 @@
 ---
-title: Business Overview
+title: Headless Ecommerce Proposal
 ---
 
 # Veneto Storefront Project — Business Overview
@@ -7,25 +7,51 @@ title: Business Overview
 
 ## Overview
 
-A brand-new online storefront for selling lighting products, matching the premium look and feel of Visual Comfort's website. Think of it as the digital showroom where customers browse products, see detailed specs and images, and add items to their cart.
+A brand-new headless online storefront for selling lighting products, matching the premium look and feel of Visual Comfort's website.
 
-**Why it matters:** Your storefront is how customers discover, understand, and buy your products. This one will be fast, professional, and built to handle thousands of products without slowing down.
+This website's data will live between Shopify and our IMS. The frontend (what you see on the page) will be a mix of a drag and drop interface software and Shopify's headless framework for React, Remix/React Router.
+
+## Why?
+
+This is the closest analog to Visual Comfort on the software side.
+
+## What does "headless" mean?
+
+Websites have a frontend and a backend. 
+
+The backend has all your data, and exposing all of this data is bad. Some of it may be things like customer addresses, purchases, or emails.
+
+When a developer puts up a website, the frontend makes this data pretty so you can read it and interact with it without compromising the rest of your data.
+
+The frontend is what the browser sees- it only has access to what it is given by the backend. Shopify gives you both by default, but gives you limited control over what you can do with the frontend.
+
+Going headless means using Shopify as just a backend, and taking control over the frontend.
+
+## Case for Headless
+
+- Quick, modern routing
+- The shopify version of what Visual Comfort is doing (which is why this is being proposed)
+- Faster load times
+- Full control over a secondary backend, where many business operations can be performed.
+- Full control over product configuration logic
+
+## Case against headless
+
+- Frontend-focused apps (reviews, etc.) will often have to be custom built
+- Money pit if you need major feature changes
+- Time consuming
+- Requires mid-senior (5+ year) development knowledge specifically in React
+- Will need a developer on call for the rest of the site's existence
+
+## So what if a non-programmer wants to edit?
+
+That's where [Builder.io](htpps://builder.io), or [Storyblok](https://www.storyblok.com/tp/headless-commerce-with-shopify-hydrogen-and-storyblok) comes in. From the very beginning, components (things like buttons, menus, FAQs) will be *registered*, or pre-defined, in that page builder. 
+
+Then, when a page needs to be edited, a layman can go in and edit the page without code! This is very similar already to how Shopify works.
 
 ---
 
 ## Big Picture: How It Works
-
-```
-Customers browse our store → They see product details, images, specs
-                           ↓
-                    Behind the scenes:
-                    • Product data comes from Shopify (our inventory system)
-                    • Marketing content (hero banners, landing pages) comes from a 
-                      visual drag-and-drop editor (Builder.io)
-                    • Images are stored and delivered fast via Shopify's CDN
-                           ↓
-                    Customer adds to cart → Checks out (Shopify handles this)
-```
 
 **Key decision:** We're using two separate tools for different jobs:
 - **Shopify** = handles all product data, inventory, payments, orders (the "brain")
@@ -43,12 +69,11 @@ This means developers write the custom components once, then merchandisers can c
 
 | Phase | What's Delivered | Timeline |
 |---|---|---|
-| **Phase 1 (Weeks 1–4)** | Brand colors, fonts, header, navigation, footer, forms | Month 1 |
-| **Phase 2 (Weeks 5–9)** | Product detail pages with images, specs, downloads, ratings | Weeks 5–9 |
-| **Phase 3 (Weeks 10–11)** | Product collection pages, filtering, sorting | Weeks 10–11 |
-| **Phase 4 (Weeks 12–13)** | Homepage, search, final polish, launch to production | Weeks 12–13 |
+| **Phase 1 (Weeks 1–4)** | Design system. Colors, fonts, header, navigation, footer, forms, component registry. At the same time, integration from IMS. | Month 1 |
+| **Phase 2 (Weeks 5–9)** | Page templates. Product pages, Collection pages, about pages, partner/wholesale pages. Product data. | Weeks 5–9 |
+| **Phase 3 (Weeks 10–11)** | Product data audit | Weeks 10–11 |
+| **Phase 4 (Weeks 12–13)** | Further polishing, launch to production | Weeks 12–13 |
 
-**Total 3-month estimate:** $50K–$80K dev labor + $10K–$15K software/services
 
 <!-- /tab -->
 
@@ -56,17 +81,25 @@ This means developers write the custom components once, then merchandisers can c
 
 ## Stakeholders & Sign-offs
 
-### Who Needs to Be Involved
+### Ideal role delegation (many shared by the same person)
 
 | Role | Involvement | Time Commitment |
 |---|---|---|
-| **Product Owner/Exec sponsor** | Approve design direction, features, timeline. Make call on what ships. | 5–10 hrs/month |
+| **Product Owner** | Approve design direction, features, timeline. Make call on what ships. | 5–10 hrs/month |
 | **Marketing/Merchandising** | Provide product content, approve homepage layout, use Builder.io to compose pages | 15–20 hrs/month once Phase 2+ ships |
 | **Shopify Admin** | Set up product catalog, metafields (specs), categories. Maintain product data. | 10–20 hrs/month prep, then ongoing |
 | **Design/Brand** | Approve color palette, fonts, layouts. Ensure visual consistency. | 10–15 hrs/month |
-| **Development team** | Build and ship the storefront, integrate Shopify APIs, support Builder.io setup | Full-time: 1–2 devs |
+| **Development** | Build and ship the storefront, integrate Shopify APIs, support Builder.io setup | Full-time: 1–2 devs |
 | **QA/Testing** | Test on real devices, verify accessibility (screen readers), browser compatibility | 5–10 hrs/week during dev |
 | **IT/DevOps** | Set up production environment, manage secrets (API keys), monitor uptime | 5 hrs/week setup, then 2–3 hrs/week ongoing |
+
+These are non-AI estimations. AI can handle much of development and devops. It cannot mass-edit data.
+
+## Before we start 
+
+-Data needs to be managed centrally.
+
+-Site image content needs to be prepared.
 
 ### Sign-offs Needed Before We Start
 
@@ -90,18 +123,20 @@ This means developers write the custom components once, then merchandisers can c
 - Customers can easily browse products, filter by category, zoom images
 - Specs are clear and readable; download files work
 - Inch/CM configuration
-- 3D Model hosting capability
 - Mobile is as smooth as desktop
+- Design is responsive: works on all screens
 - All buttons/links work on keyboard (no mouse required)
 
 ✅ **Accessibility:**
 - Screen reader users (blind/low vision) can navigate and buy
 - Color contrast is readable for vision-impaired users
 - Forms announce errors clearly
+- All a11y checks pass
 
 ✅ **Merchandising agility:**
 - Marketing team can create landing pages via Builder.io drag-and-drop
 - No code changes needed for homepage refreshes or seasonal promotions
+- Data is managed in places accessible to non-devs
 
 ✅ **Operations:**
 - Zero data loss or cart abandonment due to technical issues
@@ -124,7 +159,7 @@ We're using Claude AI (specifically Claude Code) to:
 - **Code review assistance** — identify potential bugs or performance issues before human review
 - **Product descriptions & metadata** — AI can suggest SEO-friendly copy for thousands of products (saves 50+ hours of manual copywriting)
 
-We will need the $100 pro account.
+We will require the $100 pro account to ship quickly.
 
 ### Costs & Tradeoffs of AI
 
@@ -162,7 +197,7 @@ We will need the $100 pro account.
 
 ## Action Items & Timeline
 
-1. **Week of [DATE]:** Stakeholder kickoff meeting — confirm timeline, budget, team
+1. **Week of [START DATE]:** Stakeholder kickoff meeting — confirm timeline, budget, team
 2. **Week 1:** Design/brand finalization, Shopify account setup, dev environment ready
 3. **Weeks 2–4:** Foundation phase ships (header, navigation, forms)
 4. **Weeks 5–9:** Product pages and details
